@@ -1,19 +1,21 @@
 import json
+import asyncio
 from database import get_conversation_data, get_action_logs
-from query_analyzer import analyze_query
-from query_processor import process_query_result
-from classifiers import classify_consulting, classify_qa, classify_human
-from validators import validate_consulting_result, validate_qa_result
+from query_base import process_query
+from consulting_base import process_consulting
+from qa_base import process_qa
+from humanity_base import process_humanity
 
 async def lambda_handler(event, context):
     try:
+        # 사용자 쿼리 로드
         user_query = event.get('user_query')
         if not user_query:
             return {
                 'statusCode': 400,
                 'body': json.dumps({'error': 'User query is required'})
             }
-        
+
         # 데이터베이스에서 컨텍스트 데이터 로드
         conversation_data = get_conversation_data()
         action_logs = get_action_logs()
@@ -23,30 +25,30 @@ async def lambda_handler(event, context):
             'action_logs': action_logs
         }
         
-        # 쿼리 분석 및 처리
-        analyzed_query = analyze_query(enriched_query)
-        processed_query = process_query_result(analyzed_query)
+        # 쿼리 프로세스
+        query_process_result = process_query(enriched_query)
         
-        # 분류 수행 및 검증
-        consulting_result = classify_consulting(processed_query)
-        consulting_result = validate_consulting_result(consulting_result, processed_query)
+        # 병렬 처리 프로세스
+        ## 컨설팅 프로세스
+        consulting_process_result = asyncio.create_task(process_consulting(query_process_result))
+        ## qa 프로세스
+        qa_process_result = asyncio.create_task(process_qa(query_process_result))
+        ## 인간적인 답변 프로세스
+        humanity_process_result = asyncio.create_task(process_humanity(query_process_result))
+
+        # 모든 생성 작업 완료 대기
+        pending_tasks = [task for task in [
+            consulting_process_result,
+            qa_process_result,
+            humanity_process_result
+        ] if task is not None]
         
-        qa_result = classify_qa(processed_query)
-        qa_result = validate_qa_result(qa_result, processed_query)
+        generated_response = await asyncio.gather(*pending_tasks) if pending_tasks else []
         
-        human_result = classify_human(processed_query)
-        
-        # 결과 반환
         return {
             'statusCode': 200,
             'body': json.dumps({
-                'analyzed_query': analyzed_query,
-                'processed_query': processed_query,
-                'classifications': {
-                    'consulting': consulting_result,
-                    'qa': qa_result,
-                    'human': human_result
-                }
+                'response': generated_response
             })
         }
         

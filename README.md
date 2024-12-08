@@ -26,26 +26,14 @@ SUPABASE_KEY=your_supabase_key
 - `lambda_function.py`: 메인 Lambda 함수
 - `database.py`: Supabase 데이터베이스 연결 및 쿼리
 - `query_analyzer.py`: 사용자 쿼리 분석 로직
+- `classifiers.py`: 쿼리 분류 함수들
+- `validators.py`: 분류 결과 검증 함수들
 - `requirements.txt`: 필요한 패키지 목록
 
-## Lambda 함수 입력 형식
+## 용어 설명
 
-```json
-{
-    "user_query": "사용자 입력 문자열"
-}
-```
+### Args
+함수의 입력 매개변수를 설명하는 부분입니다.
 
-## Lambda 함수 출력 형식
-
-```json
-{
-    "statusCode": 200,
-    "body": {
-        "analysis": {
-            "query": "원본 쿼리",
-            "analysis_result": "분석 결과"
-        }
-    }
-}
-``` 
+### Returns
+함수가 반환하는 값을 설명하는 부분입니다.
