@@ -99,6 +99,28 @@ async def create_final_plan_sheets(action_output):
         final_plan: 최종 계획서 생성 결과
     """
 
+async def analyze_consulting_response(function_result):
+    """
+    컨설팅 답변을 분석하는 함수
+    
+    Args:
+        action_output: 컨설팅 행동 출력 결과
+        
+    Returns:
+        analysis_result: 컨설팅 답변 분석 결과
+    """
+
+async def print_consulting_response(analysis_result):
+    """
+    컨설팅 답변 분석 결과를 출력하는 함수
+    
+    Args:
+        response_analysis: 컨설팅 답변 분석 결과
+        
+    Returns:
+        output_result: 컨설팅 답변 출력 결과 
+    """
+
 async def process_consulting(query_result):
     """
     컨설팅 단계를 수행하는 함수
@@ -118,6 +140,9 @@ async def process_consulting(query_result):
             asyncio.create_task(get_design_templates(action_output)), 
             asyncio.create_task(create_final_plan_sheets(action_output))
     ]
-    process_result = await asyncio.gather(*action_tasks)
+    function_result = await asyncio.gather(*action_tasks)
 
-    return process_result
+    response_analysis = await analyze_consulting_response(function_result)
+    response_output = await print_consulting_response(response_analysis)
+
+    return response_output
