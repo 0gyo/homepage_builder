@@ -35,13 +35,22 @@ jobs:
     
       - name: Create deployment package
         run: |
-          mkdir package
-          cp -r * package/
-          cd package
+          mkdir -p deployment
+          
+          # code 디렉토리의 모든 Python 파일을 deployment 폴더로 복사
+          cp -r code/*.py deployment/
+          
+          # requirements.txt 파일을 deployment 폴더로 복사
+          cp requirements.txt deployment/
+          
+          # deployment 폴더로 이동
+          cd deployment
+
+          # deployment 폴더의 모든 파일을 압축
           zip -r ../deployment-package.zip .
       
       - name: Deploy to AWS Lambda
         run: |
           aws lambda update-function-code \
           --function-name homepage-builder-main \
-          --zip-file fileb://deployment-package.zip 
+          --zip-file fileb://deployment-package.zip
