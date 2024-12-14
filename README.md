@@ -1,6 +1,6 @@
-# Query Analysis Lambda Function
+# Homepage Builder Lambda Function
 
-AWS Lambda를 사용한 사용자 쿼리 분석 함수입니다.
+AWS Lambda를 사용한 홈페이지 빌더 함수입니다.
 
 ## 요구사항
 
@@ -73,13 +73,13 @@ Supabase를 사용하여 다음 데이터를 관리합니다:
 ### 배포 설정
 
 1. **GitHub Secrets 설정**
-   - `AWS_ACCESS_KEY_ID`: AWS IAM 액세스 키
-   - `AWS_SECRET_ACCESS_KEY`: AWS IAM 시크릿 키
-   - `SUPABASE_URL`: Supabase 프로젝트 URL
-   - `SUPABASE_KEY`: Supabase 키
+   - `AWS_ACCESS_KEY_ID`: AWS IAM 사용자의 액세스 키
+   - `AWS_SECRET_ACCESS_KEY`: AWS IAM 사용자의 시크릿 키
+   - `SUPABASE_URL`: Supabase 프로젝트의 실제 URL
+   - `SUPABASE_KEY`: Supabase 프로젝트의 anon key
 
 2. **AWS Lambda 함수 설정**
-   - 함수 이름: `query-analysis-function`
+   - 함수 이름: `homepage-builder-main`
    - 런타임: Python 3.10
    - 핸들러: `lambda_function.lambda_handler`
    - 메모리: 최소 256MB
