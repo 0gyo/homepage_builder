@@ -21,7 +21,7 @@ SUPABASE_URL=your_supabase_url
 SUPABASE_KEY=your_supabase_key
 ```
 
-## 파로젝트 구조
+## 프로젝트 구조
 
 ### 메인 파일
 - `lambda_function.py`: Lambda 핸들러 (진입점)
@@ -65,3 +65,34 @@ Lambda 함수는 세 가지 프로세스를 병렬로 실행합니다:
 Supabase를 사용하여 다음 데이터를 관리합니다:
 - 대화 기록 (conversations)
 - 액션 로그 (action_logs)
+
+## 자동 배포
+
+이 프로젝트는 GitHub Actions를 통해 AWS Lambda에 자동으로 배포됩니다.
+
+### 배포 설정
+
+1. **GitHub Secrets 설정**
+   - `AWS_ACCESS_KEY_ID`: AWS IAM 액세스 키
+   - `AWS_SECRET_ACCESS_KEY`: AWS IAM 시크릿 키
+   - `SUPABASE_URL`: Supabase 프로젝트 URL
+   - `SUPABASE_KEY`: Supabase 키
+
+2. **AWS Lambda 함수 설정**
+   - 함수 이름: `query-analysis-function`
+   - 런타임: Python 3.10
+   - 핸들러: `lambda_function.lambda_handler`
+   - 메모리: 최소 256MB
+   - 타임아웃: 최소 30초
+
+### 배포 프로세스
+
+1. main 브랜치에 코드를 push
+2. GitHub Actions 자동 실행
+3. 테스트 실행
+4. 배포 패키지 생성
+5. AWS Lambda에 배포
+
+### 배포 상태 확인
+
+GitHub 레포지토리의 Actions 탭에서 배포 상태를 확인할 수 있습니다.
