@@ -87,11 +87,24 @@ Supabase를 사용하여 다음 데이터를 관리합니다:
 
 ### 배포 프로세스
 
-1. main 브랜치에 코드를 push
+GitHub Actions를 통해 브랜치별로 다른 Lambda 함수에 자동 배포됩니다:
+
+1. **Main 브랜치 배포**
+   - 대상 함수: `homepage-builder-main`
+   - 프로덕션 환경용
+   - `main` 브랜치에 push 또는 PR 시 자동 배포
+
+2. **Developing 브랜치 배포**
+   - 대상 함수: `homepage-builder-developing`
+   - 개발/테스트 환경용
+   - `developing` 브랜치에 push 또는 PR 시 자동 배포
+
+배포 과정:
+1. 코드를 해당 브랜치에 push
 2. GitHub Actions 자동 실행
 3. 테스트 실행
 4. 배포 패키지 생성
-5. AWS Lambda에 배포
+5. 브랜치에 따른 AWS Lambda 함수에 배포
 
 ### 배포 상태 확인
 
