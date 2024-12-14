@@ -2,9 +2,9 @@ name: Deploy to AWS Lambda
 
 on:
   push:
-    branches: [ main ]  # main 브랜치에 push될 때 실행
+    branches: [ main, developing ]  # main과 developing 브랜치에 push될 때 실행
   pull_request:
-    branches: [ main ]  # main 브랜치로의 PR이 생성될 때 실행
+    branches: [ main, developing ]  # main과 developing 브랜치로의 PR이 생성될 때 실행
 
 jobs:
   deploy:
@@ -36,21 +36,19 @@ jobs:
       - name: Create deployment package
         run: |
           mkdir -p deployment
-          
-          # code 디렉토리의 모든 Python 파일을 deployment 폴더로 복사
           cp -r code/*.py deployment/
-          
-          # requirements.txt 파일을 deployment 폴더로 복사
           cp requirements.txt deployment/
-          
-          # deployment 폴더로 이동
           cd deployment
-
-          # deployment 폴더의 모든 파일을 압축
           zip -r ../deployment-package.zip .
       
       - name: Deploy to AWS Lambda
         run: |
-          aws lambda update-function-code \
-          --function-name homepage-builder-main \
-          --zip-file fileb://deployment-package.zip
+          if [ ${{ github.ref }} = 'refs/heads/main' ]; then
+            aws lambda update-function-code \
+            --function-name homepage-builder-main \
+            --zip-file fileb://deployment-package.zip
+          elif [ ${{ github.ref }} = 'refs/heads/developing' ]; then
+            aws lambda update-function-code \
+            --function-name homepage-builder-developing \
+            --zip-file fileb://deployment-package.zip
+          fi
